@@ -40,6 +40,9 @@ const showHelp = () => {
   <Toolbar class="app-header" style="--wails-draggable:drag">
     <template #start>
       <div class="toolbar-start">
+        <svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" style="height: 1.5em;">
+          <path d="M142 122H356C356 349 199 458 142 389C85.7484 320.906 214 188 443 231" stroke-width="40" stroke-linecap="round" style="stroke: light-dark(black, white);"/>
+        </svg>&nbsp;
         <Button
           icon="pi pi-plus"
           label="Add Files"
@@ -142,11 +145,13 @@ const showHelp = () => {
 .toolbar-start {
   display: flex;
   gap: 0.5rem;
+  align-items: center;
 }
 
 .toolbar-end {
   display: flex;
   gap: 0.5rem;
+  align-items: center;
 }
 
 .modal-placeholder {
