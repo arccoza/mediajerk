@@ -95,15 +95,17 @@ const onRowReorder = (event: any) => {
 }
 
 .file-list-header {
-  padding: 0.5rem;
+  padding: 0.75rem;
   border-bottom: 1px solid var(--p-surface-border);
-  background-color: light-dark(var(--p-surface-100), var(--p-surface-800));
+  --bg: light-dark(var(--p-surface-100), var(--p-surface-800));
+  background-color: color-mix(in srgb, var(--bg), transparent 50%);
 }
 
 .file-list-header h3 {
   margin: 0;
-  font-size: 1rem;
-  font-weight: bold;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
 }
 
 .file-table {
@@ -123,6 +125,7 @@ const onRowReorder = (event: any) => {
   font-weight: 500;
   margin-bottom: 0.25rem;
   line-height: 1.2;
+  text-wrap: nowrap;
 }
 
 .file-path {
