@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ref } from "vue"
 import DataTable from "primevue/datatable"
 import Column from "primevue/column"
 import Button from "primevue/button"
@@ -11,23 +10,24 @@ interface FileItem {
   size?: string
 }
 
-const files = ref<FileItem[]>([
-  {
-    id: 1,
-    filename: "Game.of.Thrones.S01E01.Winter.is.Coming.mkv",
-    path: "/media/tv-shows/",
-    size: "1.2 GB",
-  },
-  {
-    id: 2,
-    filename: "Breaking.Bad.S01E01.Pilot.mp4",
-    path: "/media/tv-shows/",
-    size: "850 MB",
-  },
-])
+interface Props {
+  files: FileItem[]
+}
+
+interface Emits {
+  (e: "row-reorder", files: FileItem[]): void
+  (e: "remove-file", id: number): void
+}
+
+const props = defineProps<Props>()
+const emit = defineEmits<Emits>()
 
 const removeFile = (id: number) => {
-  files.value = files.value.filter((file) => file.id !== id)
+  emit("remove-file", id)
+}
+
+const onRowReorder = (event: any) => {
+  emit("row-reorder", event.value)
 }
 </script>
 
@@ -38,12 +38,19 @@ const removeFile = (id: number) => {
     </div>
 
     <DataTable
-      :value="files"
+      :value="props.files"
       :scrollable="true"
       scroll-height="100%"
+      reorderableRows
+      @row-reorder="onRowReorder"
       class="file-table"
-      :pt="{ table: { style: 'min-width: 100%' } }"
+      :pt="{
+        table: { style: 'min-width: 100%' },
+        bodyRow: { style: 'height: 4rem' }
+      }"
     >
+      <Column :rowReorder="true" header="" style="width: 3rem" />
+
       <Column field="filename" header="Filename" :sortable="true" style="min-width: 200px">
         <template #body="{ data }">
           <div class="filename-cell">
@@ -55,20 +62,24 @@ const removeFile = (id: number) => {
 
       <Column field="size" header="Size" :sortable="true" style="width: 100px">
         <template #body="{ data }">
-          <span class="file-size">{{ data.size }}</span>
+          <div class="size-cell">
+            <span class="file-size">{{ data.size }}</span>
+          </div>
         </template>
       </Column>
 
       <Column header="Actions" style="width: 80px">
         <template #body="{ data }">
-          <Button
-            icon="pi pi-trash"
-            severity="danger"
-            text
-            rounded
-            @click="removeFile(data.id)"
-            class="remove-btn"
-          />
+          <div class="actions-cell">
+            <Button
+              icon="pi pi-trash"
+              severity="danger"
+              text
+              rounded
+              @click="removeFile(data.id)"
+              class="remove-btn"
+            />
+          </div>
         </template>
       </Column>
     </DataTable>
@@ -103,21 +114,40 @@ const removeFile = (id: number) => {
 .filename-cell {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  padding: 0.5rem 0;
 }
 
 .filename {
   font-weight: 500;
   margin-bottom: 0.25rem;
+  line-height: 1.2;
 }
 
 .file-path {
   color: var(--p-text-muted-color);
   font-size: 0.875rem;
+  line-height: 1.2;
+}
+
+.size-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 
 .file-size {
   font-family: monospace;
   color: var(--p-text-muted-color);
+}
+
+.actions-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 
 .remove-btn {

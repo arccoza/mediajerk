@@ -3,6 +3,8 @@ export interface MediaMetadata {
   year?: number
   season?: number
   episode?: number
+  episodeTitle?: string
+  seriesName?: string
   type?: "movie" | "tv" | "unknown"
 }
 
@@ -29,6 +31,32 @@ export const defaultTemplates: FileTemplate[] = [
     description: "Extended TV show format including episode title",
   },
 ]
+
+export class MetadataFormatter {
+  static formatMetadataDisplay(metadata: MediaMetadata): string {
+    if (metadata.type === "tv") {
+      // TV format: "01|02, Show name, Episode title"
+      const season = metadata.season?.toString().padStart(2, "0") || "??"
+      const episode = metadata.episode?.toString().padStart(2, "0") || "??"
+      const showName = metadata.title || "Unknown Show"
+      const episodeTitle = metadata.episodeTitle || "Unknown Episode"
+
+      return `${season}|${episode}, ${showName}, ${episodeTitle}`
+    } else if (metadata.type === "movie") {
+      // Movie format: "Series name, Movie name" or just "Movie name"
+      const movieName = metadata.title || "Unknown Movie"
+
+      if (metadata.seriesName) {
+        return `${metadata.seriesName}, ${movieName}`
+      }
+
+      return movieName
+    }
+
+    // Fallback for unknown type
+    return metadata.title || "Unknown"
+  }
+}
 
 export class TemplateProcessor {
   static applyTemplate(

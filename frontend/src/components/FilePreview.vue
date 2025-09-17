@@ -1,34 +1,31 @@
 <script lang="ts" setup>
-import { ref, computed } from "vue"
+import { ref } from "vue"
 import DataTable from "primevue/datatable"
 import Column from "primevue/column"
 import Tag from "primevue/tag"
+import { MediaMetadata, MetadataFormatter } from "../utils/templateProcessor"
 
 interface PreviewItem {
   id: number
   originalFilename: string
   newFilename: string
+  metadata: MediaMetadata
   status: "ready" | "warning" | "error"
   message?: string
 }
 
-const template = ref("[title] ([year]) - S[##]E[##]")
+interface Props {
+  previewFiles: PreviewItem[]
+}
 
-const previewFiles = ref<PreviewItem[]>([
-  {
-    id: 1,
-    originalFilename: "Game.of.Thrones.S01E01.Winter.is.Coming.mkv",
-    newFilename: "Game of Thrones (2011) - S01E01.mkv",
-    status: "ready",
-  },
-  {
-    id: 2,
-    originalFilename: "Breaking.Bad.S01E01.Pilot.mp4",
-    newFilename: "Breaking Bad (2008) - S01E01.mp4",
-    status: "warning",
-    message: "Metadata not found",
-  },
-])
+interface Emits {
+  (e: "row-reorder", files: PreviewItem[]): void
+}
+
+const props = defineProps<Props>()
+const emit = defineEmits<Emits>()
+
+const template = ref("[title] ([year]) - S[##]E[##]")
 
 const getStatusSeverity = (status: string) => {
   switch (status) {
@@ -42,6 +39,10 @@ const getStatusSeverity = (status: string) => {
       return "info"
   }
 }
+
+const onRowReorder = (event: any) => {
+  emit("row-reorder", event.value)
+}
 </script>
 
 <template>
@@ -51,34 +52,45 @@ const getStatusSeverity = (status: string) => {
     </div>
 
     <DataTable
-      :value="previewFiles"
+      :value="props.previewFiles"
       :scrollable="true"
       scroll-height="100%"
+      reorderableRows
+      @row-reorder="onRowReorder"
       class="preview-table"
-      :pt="{ table: { style: 'min-width: 100%' } }"
+      :pt="{
+        table: { style: 'min-width: 100%' },
+        bodyRow: { style: 'height: 4rem' }
+      }"
     >
-      <Column field="originalFilename" header="Original" style="width: 40%">
-        <template #body="{ data }">
-          <span class="original-filename">{{ data.originalFilename }}</span>
-        </template>
-      </Column>
+      <Column :rowReorder="true" header="" style="width: 3rem" />
 
-      <Column field="newFilename" header="New Filename" style="width: 40%">
+      <!-- <Column field="originalFilename" header="Original" style="width: 40%">
+        <template #body="{ data }">
+          <div class="original-filename-cell">
+            <span class="original-filename">{{ data.originalFilename }}</span>
+          </div>
+        </template>
+      </Column> -->
+
+      <Column field="newFilename" header="New Filename" style="width: 80%">
         <template #body="{ data }">
           <div class="new-filename-cell">
             <span class="new-filename">{{ data.newFilename }}</span>
-            <small v-if="data.message" class="rename-message">{{ data.message }}</small>
+            <small class="metadata-display">{{ MetadataFormatter.formatMetadataDisplay(data.metadata) }}</small>
           </div>
         </template>
       </Column>
 
       <Column field="status" header="Status" style="width: 20%">
         <template #body="{ data }">
-          <Tag
-            :value="data.status"
-            :severity="getStatusSeverity(data.status)"
-            class="status-tag"
-          />
+          <div class="status-cell">
+            <Tag
+              :value="data.status"
+              :severity="getStatusSeverity(data.status)"
+              class="status-tag"
+            />
+          </div>
         </template>
       </Column>
     </DataTable>
@@ -117,24 +129,44 @@ const getStatusSeverity = (status: string) => {
   border: none;
 }
 
+.original-filename-cell {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0.5rem 0;
+}
+
 .original-filename {
   color: var(--p-text-muted-color);
   font-size: 0.9rem;
+  line-height: 1.2;
 }
 
 .new-filename-cell {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  padding: 0.5rem 0;
 }
 
 .new-filename {
   font-weight: 500;
   margin-bottom: 0.25rem;
+  line-height: 1.2;
 }
 
-.rename-message {
-  color: var(--p-orange-500);
-  font-size: 0.8rem;
+.metadata-display {
+  color: var(--p-text-muted-color);
+  font-size: 0.875rem;
+  line-height: 1.2;
+}
+
+.status-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 
 .status-tag {
