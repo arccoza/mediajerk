@@ -40,7 +40,7 @@ const showHelp = () => {
   <Toolbar class="app-header" style="--wails-draggable:drag">
     <template #start>
       <div class="toolbar-start">
-        <svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" style="height: 1.5em;">
+        <svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 1.5em; height: 1.5em;">
           <path d="M142 122H356C356 349 199 458 142 389C85.7484 320.906 214 188 443 231" stroke-width="40" stroke-linecap="round" style="stroke: light-dark(black, white);"/>
         </svg>&nbsp;
         <Button
@@ -133,7 +133,9 @@ const showHelp = () => {
 .app-header {
   border: none;
   border-bottom: 1px solid var(--p-toolbar-border-color);
+  border-bottom: 1px solid color-mix(in srgb, var(--p-toolbar-border-color), transparent 25%);
   border-radius: 0;
+  background-color: color-mix(in srgb, light-dark(var(--p-surface-100), var(--p-surface-800)), transparent 50%);
 }
 
 .app-header :deep(.p-toolbar) {
