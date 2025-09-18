@@ -1,3 +1,7 @@
+:root {
+  color-scheme: light dark;
+}
+
 html {
   background-color: rgba(27, 38, 54, 1);
   text-align: center;
@@ -26,19 +30,3 @@ body {
   height: 100vh;
   text-align: center;
 }
-
-:root {
-  color-scheme: light dark;
-}
-
-/* @media (prefers-color-scheme: light) {
-  :root {
-      color-scheme: light;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-  }
-} */

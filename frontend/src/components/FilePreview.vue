@@ -103,7 +103,7 @@ const onRowReorder = (event: any) => {
   display: flex;
   flex-direction: column;
   gap: 1em;
-  font-size: 0.875em;
+  font-size: 0.9em;
 }
 
 .file-preview-header {
