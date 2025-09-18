@@ -6,6 +6,8 @@ import (
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"github.com/wailsapp/wails/v2/pkg/options/linux"
+	"github.com/wailsapp/wails/v2/pkg/options/windows"
 )
 
 //go:embed all:frontend/dist
@@ -18,8 +20,9 @@ func main() {
 	// Create application with options
 	err := wails.Run(&options.App{
 		Title:  "mediajerk",
-		Width:  1024,
+		Width:  1280,
 		Height: 768,
+		// Frameless: true,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
@@ -28,6 +31,10 @@ func main() {
 		Bind: []interface{}{
 			app,
 		},
+		Windows: &windows.Options{
+			DisableFramelessWindowDecorations: false,
+		},
+		Linux: &linux.Options{},
 	})
 
 	if err != nil {
