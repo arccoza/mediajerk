@@ -21,10 +21,15 @@ func NewClient(key string) *Client {
 	}
 }
 
-func (cl *Client) get(path string) (res *http.Response, err error) {
+func (cl *Client) get(path string, params url.Values) (res *http.Response, err error) {
 	endpoint, err := url.JoinPath(cl.baseURL, path)
 	if err != nil {
 		return nil, err
+	}
+
+	// Add query parameters if present
+	if len(params) > 0 {
+		endpoint += "?" + params.Encode()
 	}
 
 	req, err := http.NewRequest("GET", endpoint, nil)
@@ -101,9 +106,9 @@ func encodeDetailsParams(params DetailsParams) url.Values {
 
 func (cl *Client) SearchMovie(params MovieSearchParams) (*SearchResponse[Movie], error) {
 	queryParams := encodeMovieParams(params)
-	path := "search/movie?" + queryParams.Encode()
+	path := "search/movie"
 
-	resp, err := cl.get(path)
+	resp, err := cl.get(path, queryParams)
 	if err != nil {
 		return nil, err
 	}
@@ -128,9 +133,9 @@ func (cl *Client) SearchMovie(params MovieSearchParams) (*SearchResponse[Movie],
 
 func (cl *Client) SearchTV(params TVSearchParams) (*SearchResponse[TVShow], error) {
 	queryParams := encodeTVParams(params)
-	path := "search/tv?" + queryParams.Encode()
+	path := "search/tv"
 
-	resp, err := cl.get(path)
+	resp, err := cl.get(path, queryParams)
 	if err != nil {
 		return nil, err
 	}
@@ -177,11 +182,8 @@ func (cl *Client) SearchTVByQuery(query string) (*SearchResponse[TVShow], error)
 func (cl *Client) Movies(movieId string, params DetailsParams) (*MovieDetails, error) {
 	queryParams := encodeDetailsParams(params)
 	path := "movie/" + movieId
-	if queryParams.Encode() != "" {
-		path += "?" + queryParams.Encode()
-	}
 
-	resp, err := cl.get(path)
+	resp, err := cl.get(path, queryParams)
 	if err != nil {
 		return nil, err
 	}
@@ -209,11 +211,8 @@ func (cl *Client) Movies(movieId string, params DetailsParams) (*MovieDetails, e
 func (cl *Client) TVSeries(seriesId string, params DetailsParams) (*TVSeriesDetails, error) {
 	queryParams := encodeDetailsParams(params)
 	path := "tv/" + seriesId
-	if queryParams.Encode() != "" {
-		path += "?" + queryParams.Encode()
-	}
 
-	resp, err := cl.get(path)
+	resp, err := cl.get(path, queryParams)
 	if err != nil {
 		return nil, err
 	}
@@ -241,11 +240,8 @@ func (cl *Client) TVSeries(seriesId string, params DetailsParams) (*TVSeriesDeta
 func (cl *Client) TVSeason(seriesId string, seasonNum int, params DetailsParams) (*TVSeasonDetails, error) {
 	queryParams := encodeDetailsParams(params)
 	path := "tv/" + seriesId + "/season/" + strconv.Itoa(seasonNum)
-	if queryParams.Encode() != "" {
-		path += "?" + queryParams.Encode()
-	}
 
-	resp, err := cl.get(path)
+	resp, err := cl.get(path, queryParams)
 	if err != nil {
 		return nil, err
 	}
@@ -284,7 +280,7 @@ const (
 func (cl *Client) EpisodeGroups(seriesId string) (*EpisodeGroupList, error) {
 	path := "tv/" + seriesId + "/episode_groups"
 
-	resp, err := cl.get(path)
+	resp, err := cl.get(path, url.Values{})
 	if err != nil {
 		return nil, err
 	}
@@ -312,7 +308,7 @@ func (cl *Client) EpisodeGroups(seriesId string) (*EpisodeGroupList, error) {
 func (cl *Client) EpisodesGroupedBy(groupId string) (*EpisodeGroupDetails, error) {
 	path := "tv/episode_group/" + groupId
 
-	resp, err := cl.get(path)
+	resp, err := cl.get(path, url.Values{})
 	if err != nil {
 		return nil, err
 	}
