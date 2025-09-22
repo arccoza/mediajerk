@@ -74,36 +74,40 @@ type Person struct {
 type MultiMedia struct {
 	MediaType string `json:"media_type"`
 
-	// Common fields that all types share
-	ID         int     `json:"id"`
-	Popularity float64 `json:"popularity"`
-	Adult      bool    `json:"adult"`
+	// Embedded types - only one will be populated based on MediaType
+	// Use json:"-" to exclude from automatic JSON processing since we handle it manually
+	Movie  `json:"-"`
+	TVShow `json:"-"`
+	Person `json:"-"`
+}
 
-	// Movie-specific fields
-	Title         *string `json:"title,omitempty"`
-	OriginalTitle *string `json:"original_title,omitempty"`
-	ReleaseDate   *string `json:"release_date,omitempty"`
+func (m *MultiMedia) UnmarshalJSON(data []byte) error {
+	// First extract the media_type
+	var mediaTypeStruct struct {
+		MediaType string `json:"media_type"`
+	}
+	if err := json.Unmarshal(data, &mediaTypeStruct); err != nil {
+		return err
+	}
+	m.MediaType = mediaTypeStruct.MediaType
 
-	// TV-specific fields
-	Name          *string  `json:"name,omitempty"`
-	OriginalName  *string  `json:"original_name,omitempty"`
-	FirstAirDate  *string  `json:"first_air_date,omitempty"`
-	OriginCountry []string `json:"origin_country,omitempty"`
+	// Based on media_type, unmarshal into the appropriate embedded struct
+	switch m.MediaType {
+	case "movie":
+		return json.Unmarshal(data, &m.Movie)
+	case "tv":
+		return json.Unmarshal(data, &m.TVShow)
+	case "person":
+		return json.Unmarshal(data, &m.Person)
+	default:
+		// For unknown types, try to unmarshal as much as possible
+		// This provides forward compatibility
+		json.Unmarshal(data, &m.Movie)
+		json.Unmarshal(data, &m.TVShow)
+		json.Unmarshal(data, &m.Person)
+	}
 
-	// Person-specific fields
-	ProfilePath        *string      `json:"profile_path,omitempty"`
-	KnownForDepartment *string      `json:"known_for_department,omitempty"`
-	Gender             *int         `json:"gender,omitempty"`
-	KnownFor           []MultiMedia `json:"known_for,omitempty"`
-
-	// Common fields with different names
-	PosterPath       *string  `json:"poster_path,omitempty"`
-	BackdropPath     *string  `json:"backdrop_path,omitempty"`
-	Overview         *string  `json:"overview,omitempty"`
-	OriginalLanguage *string  `json:"original_language,omitempty"`
-	VoteAverage      *float64 `json:"vote_average,omitempty"`
-	VoteCount        *int     `json:"vote_count,omitempty"`
-	GenreIDs         []int    `json:"genre_ids,omitempty"`
+	return nil
 }
 
 type SearchResponse[T any] struct {
