@@ -60,6 +60,52 @@ type TVShow struct {
 	OriginCountry    []string `json:"origin_country"`
 }
 
+type Person struct {
+	ID                 int          `json:"id"`
+	Name               string       `json:"name"`
+	ProfilePath        *string      `json:"profile_path"`
+	Adult              bool         `json:"adult"`
+	Popularity         float64      `json:"popularity"`
+	KnownForDepartment string       `json:"known_for_department"`
+	Gender             int          `json:"gender"`
+	KnownFor           []MultiMedia `json:"known_for"`
+}
+
+type MultiMedia struct {
+	MediaType string `json:"media_type"`
+
+	// Common fields that all types share
+	ID         int     `json:"id"`
+	Popularity float64 `json:"popularity"`
+	Adult      bool    `json:"adult"`
+
+	// Movie-specific fields
+	Title         *string `json:"title,omitempty"`
+	OriginalTitle *string `json:"original_title,omitempty"`
+	ReleaseDate   *string `json:"release_date,omitempty"`
+
+	// TV-specific fields
+	Name          *string  `json:"name,omitempty"`
+	OriginalName  *string  `json:"original_name,omitempty"`
+	FirstAirDate  *string  `json:"first_air_date,omitempty"`
+	OriginCountry []string `json:"origin_country,omitempty"`
+
+	// Person-specific fields
+	ProfilePath        *string      `json:"profile_path,omitempty"`
+	KnownForDepartment *string      `json:"known_for_department,omitempty"`
+	Gender             *int         `json:"gender,omitempty"`
+	KnownFor           []MultiMedia `json:"known_for,omitempty"`
+
+	// Common fields with different names
+	PosterPath       *string  `json:"poster_path,omitempty"`
+	BackdropPath     *string  `json:"backdrop_path,omitempty"`
+	Overview         *string  `json:"overview,omitempty"`
+	OriginalLanguage *string  `json:"original_language,omitempty"`
+	VoteAverage      *float64 `json:"vote_average,omitempty"`
+	VoteCount        *int     `json:"vote_count,omitempty"`
+	GenreIDs         []int    `json:"genre_ids,omitempty"`
+}
+
 type SearchResponse[T any] struct {
 	Page         int `json:"page"`
 	Results      []T `json:"results"`
