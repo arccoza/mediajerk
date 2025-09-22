@@ -16,7 +16,7 @@ indent_style = tab
 indent_size = 4
 
 # JavaScript/TypeScript files
-[*.{js,jsx,ts,tsx}]
+[*.{js,jsx,ts,tsx,vue}]
 indent_style = space
 indent_size = 2
 
