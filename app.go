@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
@@ -24,4 +26,22 @@ func (a *App) startup(ctx context.Context) {
 // Greet returns a greeting for the given name
 func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
+}
+
+func (a *App) SelectFiles() ([]string, error) {
+	files, err := runtime.OpenMultipleFilesDialog(a.ctx,
+		runtime.OpenDialogOptions{
+			Title: "Select Media Files",
+			Filters: []runtime.FileFilter{
+				{
+					DisplayName: "Video Files",
+					Pattern:     "*.mp4;*.mkv;*.avi;*.mov;*.wmv;*.flv;*.webm",
+				},
+				{
+					DisplayName: "All Files",
+					Pattern:     "*.*",
+				},
+			},
+		})
+	return files, err
 }
