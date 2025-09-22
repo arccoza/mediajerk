@@ -229,10 +229,11 @@ type TVSeriesDetails struct {
 	VoteCount           int                 `json:"vote_count"`
 
 	// Append response fields (populated by custom UnmarshalJSON)
-	FullSeasons []TVSeasonDetails `json:"-"` // From season/N keys
-	Videos      *VideosResponse   `json:"videos,omitempty"`
-	Images      *ImagesResponse   `json:"images,omitempty"`
-	Credits     *CreditsResponse  `json:"credits,omitempty"`
+	FullSeasons   []TVSeasonDetails `json:"-"` // From season/N keys
+	Videos        *VideosResponse   `json:"videos,omitempty"`
+	Images        *ImagesResponse   `json:"images,omitempty"`
+	Credits       *CreditsResponse  `json:"credits,omitempty"`
+	EpisodeGroups *EpisodeGroupList `json:"episode_groups,omitempty"`
 }
 
 func (t *TVSeriesDetails) UnmarshalJSON(data []byte) error {
@@ -333,6 +334,7 @@ type EpisodeGroup struct {
 
 type EpisodeGroupList struct {
 	Results []EpisodeGroup `json:"results"`
+	ID      int            `json:"id"`
 }
 
 type EpisodeGroupDetails struct {
