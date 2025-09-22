@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+
+	"github.com/google/go-querystring/query"
 )
 
 type Client struct {
@@ -51,61 +53,11 @@ func (cl *Client) get(path string, params url.Values) (res *http.Response, err e
 	return
 }
 
-func encodeCommonParams(params CommonSearchParams) url.Values {
-	values := url.Values{}
-	if params.Query != "" {
-		values.Set("query", params.Query)
-	}
-	if params.Language != "" {
-		values.Set("language", params.Language)
-	}
-	if params.Page > 0 {
-		values.Set("page", strconv.Itoa(int(params.Page)))
-	}
-	if params.IncludeAdult {
-		values.Set("include_adult", "true")
-	}
-	return values
-}
-
-func encodeMovieParams(params MovieSearchParams) url.Values {
-	values := encodeCommonParams(params.CommonSearchParams)
-	if params.PrimaryReleaseYear != "" {
-		values.Set("primary_release_year", params.PrimaryReleaseYear)
-	}
-	if params.Region != "" {
-		values.Set("region", params.Region)
-	}
-	if params.Year != "" {
-		values.Set("year", params.Year)
-	}
-	return values
-}
-
-func encodeTVParams(params TVSearchParams) url.Values {
-	values := encodeCommonParams(params.CommonSearchParams)
-	if params.FirstAirDateYear > 0 {
-		values.Set("first_air_date_year", strconv.Itoa(int(params.FirstAirDateYear)))
-	}
-	if params.Year > 0 {
-		values.Set("year", strconv.Itoa(int(params.Year)))
-	}
-	return values
-}
-
-func encodeDetailsParams(params DetailsParams) url.Values {
-	values := url.Values{}
-	if params.Language != "" {
-		values.Set("language", params.Language)
-	}
-	if params.AppendToResponse != "" {
-		values.Set("append_to_response", params.AppendToResponse)
-	}
-	return values
-}
-
 func (cl *Client) SearchMovie(params MovieSearchParams) (*SearchResponse[Movie], error) {
-	queryParams := encodeMovieParams(params)
+	queryParams, err := query.Values(params)
+	if err != nil {
+		return nil, err
+	}
 	path := "search/movie"
 
 	resp, err := cl.get(path, queryParams)
@@ -132,7 +84,10 @@ func (cl *Client) SearchMovie(params MovieSearchParams) (*SearchResponse[Movie],
 }
 
 func (cl *Client) SearchTV(params TVSearchParams) (*SearchResponse[TVShow], error) {
-	queryParams := encodeTVParams(params)
+	queryParams, err := query.Values(params)
+	if err != nil {
+		return nil, err
+	}
 	path := "search/tv"
 
 	resp, err := cl.get(path, queryParams)
@@ -180,7 +135,10 @@ func (cl *Client) SearchTVByQuery(query string) (*SearchResponse[TVShow], error)
 // https://developer.themoviedb.org/reference/movie-details
 // https://api.themoviedb.org/3/movie/{movie_id}
 func (cl *Client) Movies(movieId string, params DetailsParams) (*MovieDetails, error) {
-	queryParams := encodeDetailsParams(params)
+	queryParams, err := query.Values(params)
+	if err != nil {
+		return nil, err
+	}
 	path := "movie/" + movieId
 
 	resp, err := cl.get(path, queryParams)
@@ -209,7 +167,10 @@ func (cl *Client) Movies(movieId string, params DetailsParams) (*MovieDetails, e
 // https://developer.themoviedb.org/reference/tv-series-details
 // https://api.themoviedb.org/3/tv/{series_id}
 func (cl *Client) TVSeries(seriesId string, params DetailsParams) (*TVSeriesDetails, error) {
-	queryParams := encodeDetailsParams(params)
+	queryParams, err := query.Values(params)
+	if err != nil {
+		return nil, err
+	}
 	path := "tv/" + seriesId
 
 	resp, err := cl.get(path, queryParams)
@@ -238,7 +199,10 @@ func (cl *Client) TVSeries(seriesId string, params DetailsParams) (*TVSeriesDeta
 // https://developer.themoviedb.org/reference/tv-season-details
 // https://api.themoviedb.org/3/tv/{series_id}/season/{season_number}
 func (cl *Client) TVSeason(seriesId string, seasonNum int, params DetailsParams) (*TVSeasonDetails, error) {
-	queryParams := encodeDetailsParams(params)
+	queryParams, err := query.Values(params)
+	if err != nil {
+		return nil, err
+	}
 	path := "tv/" + seriesId + "/season/" + strconv.Itoa(seasonNum)
 
 	resp, err := cl.get(path, queryParams)

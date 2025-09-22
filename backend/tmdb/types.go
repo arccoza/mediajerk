@@ -8,23 +8,23 @@ import (
 )
 
 type CommonSearchParams struct {
-	Query        string
-	IncludeAdult bool
-	Language     string
-	Page         int32
+	Query        string `url:"query,omitempty"`
+	IncludeAdult bool   `url:"include_adult,omitempty"`
+	Language     string `url:"language,omitempty"`
+	Page         int32  `url:"page,omitempty"`
 }
 
 type MovieSearchParams struct {
 	CommonSearchParams
-	PrimaryReleaseYear string
-	Region             string
-	Year               string
+	PrimaryReleaseYear string `url:"primary_release_year,omitempty"`
+	Region             string `url:"region,omitempty"`
+	Year               string `url:"year,omitempty"`
 }
 
 type TVSearchParams struct {
 	CommonSearchParams
-	FirstAirDateYear int32
-	Year             int32
+	FirstAirDateYear int32 `url:"first_air_date_year,omitempty"`
+	Year             int32 `url:"year,omitempty"`
 }
 
 type Movie struct {
@@ -68,8 +68,8 @@ type SearchResponse[T any] struct {
 }
 
 type DetailsParams struct {
-	Language         string
-	AppendToResponse string
+	Language         string `url:"language,omitempty"`
+	AppendToResponse string `url:"append_to_response,omitempty"`
 }
 
 type Genre struct {
