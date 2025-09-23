@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"mediajerk/backend/non"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -28,20 +29,25 @@ func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
 }
 
-func (a *App) SelectFiles() ([]string, error) {
+func (a *App) SelectFiles(options FileDialogOptions) ([]string, error) {
 	files, err := runtime.OpenMultipleFilesDialog(a.ctx,
 		runtime.OpenDialogOptions{
-			Title: "Select Media Files",
-			Filters: []runtime.FileFilter{
-				{
-					DisplayName: "Video Files",
-					Pattern:     "*.mp4;*.mkv;*.avi;*.mov;*.wmv;*.flv;*.webm",
-				},
+			Title: non.Zero(options.Title, "Select Files"),
+			Filters: non.Nil(options.Filters, []runtime.FileFilter{
+				// {
+				// 	DisplayName: "Video Files",
+				// 	Pattern:     "*.mp4;*.mkv;*.avi;*.mov;*.wmv;*.flv;*.webm",
+				// },
 				{
 					DisplayName: "All Files",
 					Pattern:     "*.*",
 				},
-			},
+			}),
 		})
 	return files, err
+}
+
+type FileDialogOptions struct {
+	Title   string
+	Filters []runtime.FileFilter
 }
