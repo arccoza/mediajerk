@@ -2,18 +2,7 @@
 import { ref } from "vue"
 import { Button, Dialog, Toolbar } from "primevue"
 import FilePicker from "./FilePicker.vue"
-import { SelectFiles } from '../../wailsjs/go/main/App'
 
-
-const selectFiles = async () => {
-  try {
-    const files = await SelectFiles()
-    console.log('Selected files:', files)
-    // Process the file paths
-  } catch (error) {
-    console.error('Error selecting files:', error)
-  }
-}
 
 const metaSearchVisible = ref(false)
 const templateEditorVisible = ref(false)
@@ -26,9 +15,9 @@ const showTemplateEditor = () => {
   templateEditorVisible.value = true
 }
 
-const addFiles = () => {
+const addFiles = (files: string[]) => {
   // TODO: Implement file selection logic
-  console.log("Add files clicked")
+  console.log(files)
 }
 
 const refresh = () => {
@@ -55,10 +44,9 @@ const showHelp = () => {
           <path d="M142 122H356C356 349 199 458 142 389C85.7484 320.906 214 188 443 231" stroke-width="40"
             stroke-linecap="round" style="stroke: light-dark(black, white);" />
         </svg>&nbsp;
-        <!-- <FilePicker accept=".mkv"> -->
-        <Button icon="pi pi-plus" label="Add Files" severity="secondary" size="small" class="mr-2"
-          @click="selectFiles" />
-        <!-- </FilePicker> -->
+        <FilePicker :accept="{ 'Video Files': '*.mp4;*.mkv;*.avi;*.mov;*.wmv;*.flv;*.webm' }" @select="addFiles">
+          <Button icon="pi pi-plus" label="Add Files" severity="secondary" size="small" class="mr-2" />
+        </FilePicker>
         <Button icon="pi pi-search" label="Fetch Metadata" @click="showMetaSearch" severity="secondary" size="small"
           class="mr-2" />
         <Button icon="pi pi-file-edit" label="Edit Template" @click="showTemplateEditor" severity="secondary"
