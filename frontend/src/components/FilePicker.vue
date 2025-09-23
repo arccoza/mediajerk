@@ -30,23 +30,6 @@ const selectFiles = async () => {
     console.error('Error selecting files:', error)
   }
 }
-
-// let files: File[]
-// let input = document.createElement("input")
-
-// input.type = "file"
-// input.onchange = (ev: Event) => {
-//   // @ts-ignore
-//   files = Array.from(input.files)
-//   console.log(files)
-// }
-
-// // Make input attributes reactive to prop changes
-// watchEffect(() => {
-//   input.accept = accept
-//   input.multiple = multiple
-//   console.log(input)
-// })
 </script>
 <template>
   <div class="file-picker" @click="selectFiles">
