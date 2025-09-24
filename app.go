@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"mediajerk/backend/non"
+	"os"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -30,24 +31,56 @@ func (a *App) Greet(name string) string {
 }
 
 func (a *App) SelectFiles(options FileDialogOptions) ([]string, error) {
+	homeDir, _ := os.UserHomeDir()
+
+	// Convert our FileFilter to runtime.FileFilter
+	runtimeFilters := make([]runtime.FileFilter, len(options.Filters))
+	for i, filter := range options.Filters {
+		runtimeFilters[i] = runtime.FileFilter{
+			DisplayName: filter.DisplayName,
+			Pattern:     filter.Pattern,
+		}
+	}
+
+	// Default filters if none provided
+	if len(runtimeFilters) == 0 {
+		runtimeFilters = []runtime.FileFilter{
+			{
+				DisplayName: "All Files",
+				Pattern:     "*.*",
+			},
+		}
+	}
+
 	files, err := runtime.OpenMultipleFilesDialog(a.ctx,
 		runtime.OpenDialogOptions{
-			Title: non.Zero(options.Title, "Select Files"),
-			Filters: non.Nil(options.Filters, []runtime.FileFilter{
-				// {
-				// 	DisplayName: "Video Files",
-				// 	Pattern:     "*.mp4;*.mkv;*.avi;*.mov;*.wmv;*.flv;*.webm",
-				// },
-				{
-					DisplayName: "All Files",
-					Pattern:     "*.*",
-				},
-			}),
+			Title:            non.Zero(options.Title, "Select Files"),
+			Filters:          runtimeFilters,
+			DefaultDirectory: homeDir,
 		})
+
+	// fileList := make([]os.FileInfo, 0, len(files))
+	// for _, path := range files {
+	// 	file, err := os.Stat(path)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+
+	// 	fileList = append(fileList, file)
+	// }
+	// for _, file := range fileList {
+	// 	fmt.Printf("File: %s, Size: %d bytes, ModTime: %v\n",
+	// 		file.Name(), file.Size(), file.ModTime())
+	// }
 	return files, err
 }
 
+type FileFilter struct {
+	DisplayName string `json:"displayName"`
+	Pattern     string `json:"pattern"`
+}
+
 type FileDialogOptions struct {
-	Title   string
-	Filters []runtime.FileFilter
+	Title   string       `json:"title"`
+	Filters []FileFilter `json:"filters"`
 }

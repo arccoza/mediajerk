@@ -1,8 +1,8 @@
-export namespace frontend {
+export namespace main {
 	
 	export class FileFilter {
-	    DisplayName: string;
-	    Pattern: string;
+	    displayName: string;
+	    pattern: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new FileFilter(source);
@@ -10,18 +10,13 @@ export namespace frontend {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.DisplayName = source["DisplayName"];
-	        this.Pattern = source["Pattern"];
+	        this.displayName = source["displayName"];
+	        this.pattern = source["pattern"];
 	    }
 	}
-
-}
-
-export namespace main {
-	
 	export class FileDialogOptions {
-	    Title: string;
-	    Filters: frontend.FileFilter[];
+	    title: string;
+	    filters: FileFilter[];
 	
 	    static createFrom(source: any = {}) {
 	        return new FileDialogOptions(source);
@@ -29,8 +24,8 @@ export namespace main {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.Title = source["Title"];
-	        this.Filters = this.convertValues(source["Filters"], frontend.FileFilter);
+	        this.title = source["title"];
+	        this.filters = this.convertValues(source["filters"], FileFilter);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { SelectFiles } from "../../wailsjs/go/main/App"
-import type { main, frontend } from "../../wailsjs/go/models"
+import type { main } from "../../wailsjs/go/models"
 
 
 const { accept = { "All Files": "*.*" }, multiple = false } = defineProps<{
@@ -15,14 +15,14 @@ const emit = defineEmits<{
 }>()
 
 const filters = computed(() => {
-  return Object.entries(accept).map(([k, v]) => ({ DisplayName: k, Pattern: v })) as frontend.FileFilter[]
+  return Object.entries(accept).map(([k, v]) => ({ displayName: k, pattern: v })) as main.FileFilter[]
 })
 
 const selectFiles = async () => {
   try {
     const files = await SelectFiles({
-      Title: "Select Media Files",
-      Filters: filters.value,
+      title: "Select Media Files",
+      filters: filters.value,
     } as main.FileDialogOptions)
 
     emit("select", files)
