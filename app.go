@@ -74,6 +74,10 @@ func (a *App) SelectFiles(options FileDialogOptions) ([]FileInfo, error) {
 	return fileList, err
 }
 
+func (a *App) FilepathJoin(elem ...string) string {
+	return filepath.Join(elem...)
+}
+
 type FileFilter struct {
 	DisplayName string `json:"displayName"`
 	Pattern     string `json:"pattern"`
