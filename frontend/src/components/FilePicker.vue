@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import { SelectFiles } from "../../wailsjs/go/main/App"
 import type { main } from "../../wailsjs/go/models"
-
+export type FileInfo = main.FileInfo
 
 const { accept = { "All Files": "*.*" }, multiple = false } = defineProps<{
   title?: string
@@ -11,7 +11,7 @@ const { accept = { "All Files": "*.*" }, multiple = false } = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  select: [files: string[]]
+  select: [files: main.FileInfo[]]
 }>()
 
 const filters = computed(() => {

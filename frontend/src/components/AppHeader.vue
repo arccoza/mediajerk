@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from "vue"
 import { Button, Dialog, Toolbar } from "primevue"
-import FilePicker from "./FilePicker.vue"
+import FilePicker, { FileInfo } from "./FilePicker.vue"
 
 
 const metaSearchVisible = ref(false)
@@ -15,7 +15,7 @@ const showTemplateEditor = () => {
   templateEditorVisible.value = true
 }
 
-const addFiles = (files: string[]) => {
+const addFiles = (files: FileInfo[]) => {
   // TODO: Implement file selection logic
   console.log(files)
 }
