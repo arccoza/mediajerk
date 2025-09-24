@@ -46,6 +46,29 @@ export namespace main {
 		    return a;
 		}
 	}
+	
+	export class FileInfo {
+	    name: string;
+	    ext: string;
+	    dir: string;
+	    path: string;
+	    seperator: string;
+	    lastModified: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new FileInfo(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
+	        this.ext = source["ext"];
+	        this.dir = source["dir"];
+	        this.path = source["path"];
+	        this.seperator = source["seperator"];
+	        this.lastModified = source["lastModified"];
+	    }
+	}
 
 }
 

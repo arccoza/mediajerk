@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"mediajerk/backend/non"
 	"os"
+	"path/filepath"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -30,7 +31,7 @@ func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
 }
 
-func (a *App) SelectFiles(options FileDialogOptions) ([]string, error) {
+func (a *App) SelectFiles(options FileDialogOptions) ([]FileInfo, error) {
 	homeDir, _ := os.UserHomeDir()
 
 	// Convert our FileFilter to runtime.FileFilter
@@ -59,20 +60,18 @@ func (a *App) SelectFiles(options FileDialogOptions) ([]string, error) {
 			DefaultDirectory: homeDir,
 		})
 
-	// fileList := make([]os.FileInfo, 0, len(files))
-	// for _, path := range files {
-	// 	file, err := os.Stat(path)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
+	fileList := make([]FileInfo, 0, len(files))
+	for _, path := range files {
+		info, err := os.Stat(path)
+		if err != nil {
+			return nil, err
+		}
 
-	// 	fileList = append(fileList, file)
-	// }
-	// for _, file := range fileList {
-	// 	fmt.Printf("File: %s, Size: %d bytes, ModTime: %v\n",
-	// 		file.Name(), file.Size(), file.ModTime())
-	// }
-	return files, err
+		fileList = append(fileList, FileInfo{info.Name(), filepath.Ext(path), filepath.Dir(path), path, string(filepath.Separator), int(info.ModTime().UnixMilli())})
+	}
+
+	// fmt.Println(fileList)
+	return fileList, err
 }
 
 type FileFilter struct {
@@ -83,4 +82,13 @@ type FileFilter struct {
 type FileDialogOptions struct {
 	Title   string       `json:"title"`
 	Filters []FileFilter `json:"filters"`
+}
+
+type FileInfo struct {
+	Name         string `json:"name"`
+	Ext          string `json:"ext"`
+	Dir          string `json:"dir"`
+	Path         string `json:"path"`
+	Seperator    string `json:"seperator"`
+	LastModified int    `json:"lastModified"`
 }

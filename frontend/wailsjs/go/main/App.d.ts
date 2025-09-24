@@ -4,4 +4,4 @@ import {main} from '../models';
 
 export function Greet(arg1:string):Promise<string>;
 
-export function SelectFiles(arg1:main.FileDialogOptions):Promise<Array<string>>;
+export function SelectFiles(arg1:main.FileDialogOptions):Promise<Array<main.FileInfo>>;
