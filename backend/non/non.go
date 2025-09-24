@@ -8,7 +8,7 @@ func Zero[T comparable](a, b T) T {
 	return b
 }
 
-func Zeros[T comparable](vals ...T) T {
+func ZeroOf[T comparable](vals ...T) T {
 	var z T
 	for _, v := range vals {
 		if v != z {
@@ -27,7 +27,7 @@ func Nil[T any](a, b T) T {
 	return b
 }
 
-func Nils[T any](vals ...T) T {
+func NilOf[T any](vals ...T) T {
 	var n T
 	for _, v := range vals {
 		var a any = v
@@ -47,7 +47,7 @@ func Empty[T []any](a, b T) T {
 	return b
 }
 
-func Empties[T []any](vals ...T) T {
+func EmptyOf[T []any](vals ...T) T {
 	for _, v := range vals {
 		if len(v) > 0 {
 			return v
