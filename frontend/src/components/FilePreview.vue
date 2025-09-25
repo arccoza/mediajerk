@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { ref } from "vue"
-import DataTable from "primevue/datatable"
 import Column from "primevue/column"
+import DataTable from "primevue/datatable"
 import Tag from "primevue/tag"
-import { MediaMetadata, MetadataFormatter } from "../utils/templateProcessor"
+import { ref } from "vue"
+import { type MediaMetadata, MetadataFormatter } from "../utils/templateProcessor"
 
 interface PreviewItem {
   id: number
@@ -18,9 +18,7 @@ interface Props {
   previewFiles: PreviewItem[]
 }
 
-interface Emits {
-  (e: "row-reorder", files: PreviewItem[]): void
-}
+type Emits = (e: "row-reorder", files: PreviewItem[]) => void
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()

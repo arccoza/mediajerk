@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed } from "vue"
 import { SelectFiles } from "../../wailsjs/go/main/App"
 import type { main } from "../../wailsjs/go/models"
 export type FileInfo = main.FileInfo
@@ -15,7 +15,10 @@ const emit = defineEmits<{
 }>()
 
 const filters = computed(() => {
-  return Object.entries(accept).map(([k, v]) => ({ displayName: k, pattern: v })) as main.FileFilter[]
+  return Object.entries(accept).map(([k, v]) => ({
+    displayName: k,
+    pattern: v,
+  })) as main.FileFilter[]
 })
 
 const selectFiles = async () => {
@@ -27,7 +30,7 @@ const selectFiles = async () => {
 
     emit("select", files)
   } catch (error) {
-    console.error('Error selecting files:', error)
+    console.error("Error selecting files:", error)
   }
 }
 </script>
