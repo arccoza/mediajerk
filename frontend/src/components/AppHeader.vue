@@ -1,8 +1,11 @@
 <script lang="ts" setup>
-import { ref } from "vue"
 import { Button, Dialog, Toolbar } from "primevue"
-import FilePicker, { FileInfo } from "./FilePicker.vue"
+import { ref } from "vue"
+import { useFiles } from "../composables/useFiles"
+import FilePicker from "./FilePicker.vue"
 
+// Use files composable
+const { addFiles, hasSelection, selectedCount, removeSelectedFiles } = useFiles()
 
 const metaSearchVisible = ref(false)
 const templateEditorVisible = ref(false)
@@ -13,11 +16,6 @@ const showMetaSearch = () => {
 
 const showTemplateEditor = () => {
   templateEditorVisible.value = true
-}
-
-const addFiles = (files: FileInfo[]) => {
-  // TODO: Implement file selection logic
-  console.log(files)
 }
 
 const refresh = () => {
@@ -47,6 +45,15 @@ const showHelp = () => {
         <FilePicker :accept="{ 'Video Files': '*.mp4;*.mkv;*.avi;*.mov;*.wmv;*.flv;*.webm' }" @select="addFiles">
           <Button icon="pi pi-plus" label="Add Files" severity="secondary" size="small" class="mr-2" />
         </FilePicker>
+        <Button
+          icon="pi pi-trash"
+          :label="`Remove Selected (${selectedCount})`"
+          severity="danger"
+          size="small"
+          class="mr-2"
+          :disabled="!hasSelection"
+          @click="removeSelectedFiles"
+        />
         <Button icon="pi pi-search" label="Fetch Metadata" @click="showMetaSearch" severity="secondary" size="small"
           class="mr-2" />
         <Button icon="pi pi-file-edit" label="Edit Template" @click="showTemplateEditor" severity="secondary"

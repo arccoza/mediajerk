@@ -1,30 +1,13 @@
 <script lang="ts" setup>
-import DataTable from "primevue/datatable"
 import Column from "primevue/column"
-import Button from "primevue/button"
+import DataTable from "primevue/datatable"
+import Tag from "primevue/tag"
+import { type FileInfo, useFiles } from "../composables/useFiles"
 
-interface FileItem {
-  id: number
-  filename: string
-  path: string
-  size?: string
-}
+type Emits = (e: "row-reorder", files: FileInfo[]) => void
 
-interface Props {
-  files: FileItem[]
-}
-
-interface Emits {
-  (e: "row-reorder", files: FileItem[]): void
-  (e: "remove-file", id: number): void
-}
-
-const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
-
-const removeFile = (id: number) => {
-  emit("remove-file", id)
-}
+const { files, selectedFiles, selectFiles } = useFiles()
 
 const onRowReorder = (event: any) => {
   emit("row-reorder", event.value)
@@ -38,47 +21,37 @@ const onRowReorder = (event: any) => {
     </div>
 
     <DataTable
-      :value="props.files"
+      :value="files"
+      v-model:selection="selectedFiles"
       :scrollable="true"
       scroll-height="100%"
       reorderableRows
+      selectionMode="multiple"
+      dataKey="path"
       @row-reorder="onRowReorder"
+      @update:selection="selectFiles"
       class="file-table"
       :pt="{
         table: { style: 'min-width: 100%' },
         bodyRow: { style: 'height: 4rem' }
       }"
     >
+      <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
       <Column :rowReorder="true" header="" style="width: 3rem" />
 
-      <Column field="filename" header="Filename" :sortable="true" style="min-width: 200px">
+      <Column field="name" header="Filename" :sortable="true" style="min-width: 200px">
         <template #body="{ data }">
           <div class="filename-cell">
-            <span class="filename">{{ data.filename }}</span>
-            <small class="file-path">{{ data.path }}</small>
+            <span class="filename">{{ data.name }}</span>
+            <small class="file-path">{{ data.dir }}</small>
           </div>
         </template>
       </Column>
 
-      <Column field="size" header="Size" :sortable="true" style="width: 100px">
+      <Column field="ext" header="Extension" :sortable="true" style="width: 120px">
         <template #body="{ data }">
-          <div class="size-cell">
-            <span class="file-size">{{ data.size }}</span>
-          </div>
-        </template>
-      </Column>
-
-      <Column header="Actions" style="width: 80px">
-        <template #body="{ data }">
-          <div class="actions-cell">
-            <Button
-              icon="pi pi-trash"
-              severity="danger"
-              text
-              rounded
-              @click="removeFile(data.id)"
-              class="remove-btn"
-            />
+          <div class="extension-cell">
+            <Tag :value="data.ext" severity="info" class="extension-tag" />
           </div>
         </template>
       </Column>
@@ -135,27 +108,16 @@ const onRowReorder = (event: any) => {
   line-height: 1.2;
 }
 
-.size-cell {
+.extension-cell {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
 }
 
-.file-size {
+.extension-tag {
   font-family: monospace;
-  color: var(--p-text-muted-color);
-}
-
-.actions-cell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
-
-.remove-btn {
-  width: 2rem;
-  height: 2rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
 }
 </style>
