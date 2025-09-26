@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { Button, Dialog, Toolbar } from "primevue"
-import { ref } from "vue"
+import { Button, Dialog, Divider, Toolbar } from "primevue"
+import { useCssModule, ref } from "vue"
 import { useFiles } from "../composables/useFiles"
 import FilePicker from "./FilePicker.vue"
 
 // Use files composable
-const { addFiles, hasSelection, selectedCount, removeSelectedFiles } = useFiles()
+const { addFiles, clearSelection, hasSelection, selectedCount, removeSelectedFiles } = useFiles()
+// const styles = useCssModule()
 
 const metaSearchVisible = ref(false)
 const templateEditorVisible = ref(false)
@@ -45,19 +46,19 @@ const showHelp = () => {
         <FilePicker :accept="{ 'Video Files': '*.mp4;*.mkv;*.avi;*.mov;*.wmv;*.flv;*.webm' }" @select="addFiles">
           <Button icon="pi pi-plus" label="Add Files" severity="secondary" size="small" class="mr-2" />
         </FilePicker>
-        <Button
-          icon="pi pi-trash"
-          :label="`Remove Selected (${selectedCount})`"
-          severity="danger"
-          size="small"
-          class="mr-2"
-          :disabled="!hasSelection"
-          @click="removeSelectedFiles"
-        />
+        <div class="button-group">
+          <Button icon="pi pi-ban" severity="secondary" size="small" class="mr-2 contrast-button"
+            :disabled="!hasSelection" @click="clearSelection" />
+          <Button :label="`${selectedCount}`" severity="secondary" size="small" style="min-width: 3em;" />
+          <Button icon="pi pi-trash" severity="secondary" size="small" class="mr-2 danger-button"
+            :disabled="!hasSelection" @click="removeSelectedFiles" />
+        </div>
+        <Divider layout="vertical" />
         <Button icon="pi pi-search" label="Fetch Metadata" @click="showMetaSearch" severity="secondary" size="small"
           class="mr-2" />
         <Button icon="pi pi-file-edit" label="Edit Template" @click="showTemplateEditor" severity="secondary"
           size="small" class="mr-2" />
+        <Divider layout="vertical" />
         <Button icon="pi pi-play" label="Rename" @click="refresh" size="small" />
       </div>
     </template>
@@ -110,6 +111,56 @@ const showHelp = () => {
   display: flex;
   gap: 0.5rem;
   align-items: center;
+}
+
+/* .remove-button {
+  background: color-mix(in srgb, var(--p-button-danger-background), transparent 30%);
+  border-color: transparent;
+} */
+
+.select-counter {
+  font-family: monospace;
+  font-size: inherit;
+  font-weight: 500;
+  width: 1.25em;
+  height: 1.25em;
+  padding: 0;
+  margin: 0;
+}
+
+.button-group {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.button-group > :first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.button-group> :not(:first-child):not(:last-child) {
+  border-radius: 0;
+}
+
+.button-group > :last-child {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.danger-button {
+  /* background: color-mix(in srgb, var(--p-button-danger-background), transparent 70%); */
+  color: var(--p-button-danger-background);
+}
+
+.danger-button:not(:disabled):hover {
+  /* background: color-mix(in srgb, var(--p-button-danger-background), transparent 50%); */
+  color: var(--p-button-danger-background);
+  /* border-color: transparent; */
+}
+
+.contrast-button {
+  /* color: var(--p-button-danger-color); */
+  color: var(--p-button-contrast-background);
 }
 
 .toolbar-end {
