@@ -1,74 +1,84 @@
-import { computed, readonly, ref } from "vue"
+import { computed, readonly, ref, shallowRef } from "vue"
 import type { main } from "../../wailsjs/go/models"
 
+
 export type FileInfo = main.FileInfo
+export type MoreFileInfo = FileInfo & {
+  newName?: string
+  metadata?: any
+}
 
 // Shared reactive state
-const files = ref<FileInfo[]>([])
-const selectedFiles = ref<FileInfo[]>([])
+const filesMap = ref(new Map<string, MoreFileInfo>())
+const selectedSet = ref(new Set<string>())
 
 export function useFiles() {
   // Computed properties for selection
-  const hasSelection = computed(() => selectedFiles.value.length > 0)
-  const selectedCount = computed(() => selectedFiles.value.length)
+  const files = computed(() => [...filesMap.value.values()])
+  const selectedFiles = computed(() => files.value.filter((v) => selectedSet.value.has(v.path)))
+  const hasSelection = computed(() => selectedSet.value.size > 0)
+  const selectedCount = computed(() => selectedSet.value.size)
 
   // Add files to the collection
   const addFiles = (newFiles: FileInfo[]) => {
-    // Filter out duplicates based on path
-    const existingPaths = new Set(files.value.map((f) => f.path))
-    const uniqueNewFiles = newFiles.filter((file) => !existingPaths.has(file.path))
-
-    files.value.push(...uniqueNewFiles)
-    console.log(files.value)
+    // // Filter out duplicates based on path
+    for (const f of newFiles) {
+      filesMap.value.set(f.path, f)
+    }
   }
 
   // Selection management functions
   const selectFiles = (newSelection: FileInfo[]) => {
-    selectedFiles.value = newSelection
+    selectedSet.value = new Set(newSelection.map((v) => v.path))
   }
 
   const clearSelection = () => {
-    selectedFiles.value = []
+    selectedSet.value.clear()
   }
 
   // Remove file by path
   const removeFile = (path: string) => {
-    files.value = files.value.filter((file) => file.path !== path)
+    filesMap.value.delete(path)
     // Also remove from selection if it was selected
-    selectedFiles.value = selectedFiles.value.filter((file) => file.path !== path)
+    selectedSet.value.delete(path)
   }
 
   // Remove currently selected files
   const removeSelectedFiles = () => {
-    const selectedPaths = new Set(selectedFiles.value.map((f) => f.path))
-    files.value = files.value.filter((file) => !selectedPaths.has(file.path))
+    for (const path of selectedSet.value) {
+      filesMap.value.delete(path)
+    }
+
     clearSelection()
   }
 
   // Remove file by index
   const removeFileByIndex = (index: number) => {
-    files.value.splice(index, 1)
+    const path = [...filesMap.value.values()][index]?.path
+    filesMap.value.delete(path)
   }
 
   // Clear all files
   const clearFiles = () => {
-    files.value = []
+    filesMap.value.clear()
   }
 
   // Reorder files
   const reorderFiles = (reorderedFiles: FileInfo[]) => {
-    files.value = [...reorderedFiles]
+    clearFiles()
+    addFiles(reorderedFiles)
   }
 
   // Get file count
-  const fileCount = computed(() => files.value.length)
+  const fileCount = computed(() => filesMap.value.size)
 
   // Check if files list is empty
-  const isEmpty = computed(() => files.value.length === 0)
+  const isEmpty = computed(() => filesMap.value.size === 0)
 
   return {
     // Read-only access to files
-    files: readonly(files),
+    filesMap,
+    files,
     selectedFiles,
 
     // Computed properties

@@ -4,6 +4,7 @@ import DataTable from "primevue/datatable"
 import Tag from "primevue/tag"
 import { type FileInfo, useFiles } from "../composables/useFiles"
 
+
 type Emits = (e: "row-reorder", files: FileInfo[]) => void
 
 const emit = defineEmits<Emits>()
@@ -22,7 +23,7 @@ const onRowReorder = (event: any) => {
 
     <DataTable
       :value="files"
-      v-model:selection="selectedFiles"
+      :selection="selectedFiles"
       :scrollable="true"
       scroll-height="100%"
       reorderableRows
