@@ -53,6 +53,7 @@ export namespace main {
 	    dir: string;
 	    path: string;
 	    seperator: string;
+	    size: number;
 	    lastModified: number;
 	
 	    static createFrom(source: any = {}) {
@@ -66,6 +67,7 @@ export namespace main {
 	        this.dir = source["dir"];
 	        this.path = source["path"];
 	        this.seperator = source["seperator"];
+	        this.size = source["size"];
 	        this.lastModified = source["lastModified"];
 	    }
 	}

@@ -6,6 +6,7 @@ import (
 	"mediajerk/backend/non"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -67,7 +68,11 @@ func (a *App) SelectFiles(options FileDialogOptions) ([]FileInfo, error) {
 			return nil, err
 		}
 
-		fileList = append(fileList, FileInfo{info.Name(), filepath.Ext(path), filepath.Dir(path), path, string(filepath.Separator), int(info.ModTime().UnixMilli())})
+		fullname := filepath.Base(path)
+		ext := filepath.Ext(path)
+		name := strings.TrimSuffix(fullname, ext)
+
+		fileList = append(fileList, FileInfo{name, ext, filepath.Dir(path), path, string(filepath.Separator), int(info.Size()), int(info.ModTime().UnixMilli())})
 	}
 
 	// fmt.Println(fileList)
@@ -94,5 +99,6 @@ type FileInfo struct {
 	Dir          string `json:"dir"`
 	Path         string `json:"path"`
 	Seperator    string `json:"seperator"`
+	Size         int    `json:"size"`
 	LastModified int    `json:"lastModified"`
 }
