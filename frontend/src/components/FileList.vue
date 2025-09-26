@@ -24,22 +24,22 @@ const onRowReorder = (event: any) => {
     <DataTable :value="files" :selection="selectedFiles" :scrollable="true" scrollHeight="flex" removableSort
       reorderableRows selectionMode="multiple" dataKey="path" @row-reorder="onRowReorder"
       @update:selection="selectFiles" class="file-table" :pt="{
-        table: { style: 'min-width: 100%' },
+        table: { style: 'max-width: 100%' },
         bodyRow: { style: 'height: 4rem' }
       }">
       <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
       <Column :rowReorder="true" header="" style="width: 3rem" />
 
-      <Column field="name" header="Filename" :sortable="true" style="min-width: 200px">
+      <Column field="name" header="Filename" :sortable="true" style="max-width: 1px;">
         <template #body="{ data }">
-          <div class="filename-cell">
+          <div class="filename-cell" v-tooltip.top="{ value: data.name, showDelay: 1200, hideDelay: 300 }" >
             <span class="filename">{{ data.name }}</span>
             <small class="file-path">{{ data.dir }}</small>
           </div>
         </template>
       </Column>
 
-      <Column field="ext" header="Extension" :sortable="true" style="width: 120px">
+      <Column field="ext" header="Ext" :sortable="true" style="width: 80px">
         <template #body="{ data }">
           <div class="extension-cell">
             <Tag :value="data.ext" severity="info" class="extension-tag" />
@@ -74,9 +74,11 @@ const onRowReorder = (event: any) => {
 }
 
 .file-table {
-  flex: 1 0 0;
+  flex: 1 1 0;
   border: none;
-  overflow: hidden;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  table-layout: fixed;
 }
 
 .filename-cell {
@@ -85,6 +87,9 @@ const onRowReorder = (event: any) => {
   justify-content: center;
   height: 100%;
   padding: 0.5rem 0;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .filename {
@@ -92,12 +97,17 @@ const onRowReorder = (event: any) => {
   margin-bottom: 0.25rem;
   line-height: 1.2;
   text-wrap: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .file-path {
   color: var(--p-text-muted-color);
   font-size: 0.875rem;
   line-height: 1.2;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .extension-cell {

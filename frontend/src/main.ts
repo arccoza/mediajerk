@@ -1,6 +1,8 @@
 import { createApp } from "vue"
 import App from "./App.vue"
 import "./style.css"
+import { Tooltip } from "primevue"
+
 
 // @ts-expect-error
 import Aura from "@primeuix/themes/aura"
@@ -18,5 +20,7 @@ app.use(PrimeVue, {
     },
   },
 })
+
+app.directive('tooltip', Tooltip)
 
 app.mount("#app")
