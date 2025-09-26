@@ -4,7 +4,6 @@ import "./style.css"
 import { Tooltip } from "primevue"
 
 
-// @ts-expect-error
 import Aura from "@primeuix/themes/aura"
 import PrimeVue from "primevue/config"
 import "primeicons/primeicons.css"
