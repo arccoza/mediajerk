@@ -21,22 +21,12 @@ const onRowReorder = (event: any) => {
       <h3>Original Files</h3>
     </div>
 
-    <DataTable
-      :value="files"
-      :selection="selectedFiles"
-      :scrollable="true"
-      scroll-height="100%"
-      reorderableRows
-      selectionMode="multiple"
-      dataKey="path"
-      @row-reorder="onRowReorder"
-      @update:selection="selectFiles"
-      class="file-table"
-      :pt="{
+    <DataTable :value="files" :selection="selectedFiles" :scrollable="true" scrollHeight="flex" removableSort
+      reorderableRows selectionMode="multiple" dataKey="path" @row-reorder="onRowReorder"
+      @update:selection="selectFiles" class="file-table" :pt="{
         table: { style: 'min-width: 100%' },
         bodyRow: { style: 'height: 4rem' }
-      }"
-    >
+      }">
       <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
       <Column :rowReorder="true" header="" style="width: 3rem" />
 
@@ -84,8 +74,9 @@ const onRowReorder = (event: any) => {
 }
 
 .file-table {
-  flex: 1;
+  flex: 1 0 0;
   border: none;
+  overflow: hidden;
 }
 
 .filename-cell {
