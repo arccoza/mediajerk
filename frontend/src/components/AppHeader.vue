@@ -98,7 +98,7 @@ const showHelp = () => {
   border-bottom: 1px solid var(--p-toolbar-border-color);
   border-bottom: 1px solid color-mix(in srgb, var(--p-toolbar-border-color), transparent 25%);
   border-radius: 0;
-  background-color: color-mix(in srgb, light-dark(var(--p-surface-100), var(--p-surface-800)), transparent 50%);
+  background-color: color-mix(in srgb, light-dark(var(--p-surface-50), var(--p-surface-800)), transparent 60%);
 }
 
 .app-header :deep(.p-toolbar) {
