@@ -3,6 +3,8 @@ import { Button, Dialog, Divider, Toolbar } from "primevue"
 import { useCssModule, ref } from "vue"
 import { useFiles } from "../composables/useFiles"
 import FilePicker from "./FilePicker.vue"
+import WindowControls from "./WindowControls.vue"
+
 
 // Use files composable
 const { addFiles, clearSelection, hasSelection, selectedCount, removeSelectedFiles } = useFiles()
@@ -68,6 +70,7 @@ const showHelp = () => {
         <Button icon="pi pi-cog" label="Settings" @click="showSettings" severity="secondary" text size="small"
           class="mr-2" />
         <Button icon="pi pi-question-circle" label="Help" @click="showHelp" severity="secondary" text size="small" />
+        <WindowControls />
       </div>
     </template>
   </Toolbar>
