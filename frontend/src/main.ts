@@ -23,3 +23,13 @@ app.use(PrimeVue, {
 app.directive('tooltip', Tooltip)
 
 app.mount("#app")
+
+window.addEventListener('focus', () => {
+  document.body.classList.add('window-focused')
+  document.body.classList.remove('window-blurred')
+})
+
+window.addEventListener('blur', () => {
+  document.body.classList.remove('window-focused')
+  document.body.classList.add('window-blurred')
+})
