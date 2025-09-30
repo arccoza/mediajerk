@@ -38,7 +38,7 @@ body {
 #app {
   /* background-color: rgba(27, 38, 54, 1); */
   /* background-color: black; */
-  background-color: light-dark(white, var(--p-surface-900));
+  background-color: light-dark(white, #1c1c1c);
   display: flex;
   flex-flow: column nowrap;
   width: 100%;
@@ -55,5 +55,6 @@ body {
 body.window-blurred #app {
   filter: brightness(0.875) saturate(0.75);
   pointer-events: none;
-  transition: filter 0.3s ease-in-out;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  transition: filter 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
