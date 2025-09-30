@@ -7,7 +7,7 @@ import { Tooltip } from "primevue"
 import Aura from "@primeuix/themes/aura"
 import PrimeVue from "primevue/config"
 import "primeicons/primeicons.css"
-import { Environment } from "../wailsjs/runtime/runtime"
+import { Environment, WindowIsMaximised } from "../wailsjs/runtime/runtime"
 
 const app = createApp(App)
 
@@ -28,6 +28,18 @@ app.mount("#app")
 // Add OS platform class to body
 Environment().then((env) => {
   document.body.classList.add(`platform-${env.platform}`)
+})
+
+// Detect window resize (which happens on maximize/restore)
+window.addEventListener('resize', () => {
+  console.log('Window resized/maximized/restored')
+  WindowIsMaximised().then((isMax) => {
+    if (isMax) {
+      document.body.classList.add('window-max')
+    } else {
+      document.body.classList.remove('window-max')
+    }
+  })
 })
 
 // Add window focus / blur classes to body
