@@ -45,32 +45,34 @@ const showHelp = () => {
           <path d="M142 122H356C356 349 199 458 142 389C85.7484 320.906 214 188 443 231" stroke-width="40"
             stroke-linecap="round" style="stroke: light-dark(black, white);" />
         </svg>&nbsp;
-        <FilePicker :accept="{ 'Video Files': '*.mp4;*.mkv;*.avi;*.mov;*.wmv;*.flv;*.webm' }" @select="addFiles">
-          <Button icon="pi pi-plus" label="Add Files" severity="secondary" size="small" class="mr-2" />
+        <FilePicker :accept="{ 'Video Files': '*.mp4;*.mkv;*.avi;*.mov;*.wmv;*.flv;*.webm' }" @select="addFiles"
+          v-tooltip.bottom="{ value: 'Add Files', showDelay: 1200, hideDelay: 300 }">
+          <Button icon="pi pi-plus" severity="secondary" size="small" class="mr-2" />
         </FilePicker>
         <div class="button-group">
           <Button icon="pi pi-ban" severity="secondary" size="small" class="mr-2 contrast-button"
-            :disabled="!hasSelection" @click="clearSelection" />
-          <Button :label="`${selectedCount}`" severity="secondary" size="small" style="min-width: 3em;" />
+            :disabled="!hasSelection" @click="clearSelection"
+            v-tooltip.bottom="{ value: 'Clear Selection', showDelay: 1200, hideDelay: 300 }" />
+          <Button :label="`${selectedCount}`" severity="secondary" size="small" style="min-width: 3em;" inert />
           <Button icon="pi pi-trash" severity="secondary" size="small" class="mr-2 danger-button"
             :disabled="!hasSelection" @click="removeSelectedFiles" />
         </div>
         <Divider layout="vertical" />
-        <Button icon="pi pi-search" label="Fetch Metadata" @click="showMetaSearch" severity="secondary" size="small"
-          class="mr-2" />
-        <Button icon="pi pi-file-edit" label="Edit Template" @click="showTemplateEditor" severity="secondary"
-          size="small" class="mr-2" />
-        <Divider layout="vertical" />
+        <Button icon="pi pi-file-edit" @click="showTemplateEditor" severity="secondary" size="small" />
+        <Button icon="pi pi-arrow-right-arrow-left" label="Match" severity="secondary" size="small" />
+        <!-- <Button icon="pi pi-search-plus" label="Auto" severity="secondary" size="small" /> -->
+        <!-- <Button icon="pi pi-search" label="Fetch Metadata" @click="showMetaSearch" severity="secondary" size="small" /> -->
+
+        <!-- <Divider layout="vertical" /> -->
         <Button icon="pi pi-play" label="Rename" @click="refresh" size="small" />
       </div>
     </template>
 
     <template #end>
       <div class="toolbar-end">
-        <Button icon="pi pi-cog" label="Settings" @click="showSettings" severity="secondary" text size="small"
-          class="mr-2" />
-        <Button icon="pi pi-question-circle" label="Help" @click="showHelp" severity="secondary" text size="small" />
-        <WindowControls />
+        <Button icon="pi pi-cog" @click="showSettings" severity="secondary" size="small" />
+        <!-- <Button icon="pi pi-question-circle" label="Help" @click="showHelp" severity="secondary" text size="small" /> -->
+        <WindowControls style="margin-left: 1rem;" />
       </div>
     </template>
   </Toolbar>
