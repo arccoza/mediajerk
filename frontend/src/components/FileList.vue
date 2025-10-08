@@ -76,8 +76,9 @@ const onRowReorder = (event: any) => {
 .file-table {
   flex: 1 1 0;
   border: none;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  /* overflow-y: scroll; */
+  /* overflow-x: hidden; */
+  overflow: hidden;
   table-layout: fixed;
 }
 
